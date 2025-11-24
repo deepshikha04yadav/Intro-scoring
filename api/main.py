@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 from fastapi.middleware.cors import CORSMiddleware
-=======
->>>>>>> af9d1a4abcf727d422f351a5bb7e0d42a4df7aa8
 from fastapi import FastAPI
 
 from .schemas import TranscriptRequest, CriterionScore, OverallResponse
@@ -9,7 +6,6 @@ from models.overall_scorer import score_transcript
 
 app = FastAPI(title="Spoken Intro Scoring API")
 
-# ---------------- CORS FIX ----------------
 origins = [
     "http://localhost:3000",  # React Dev Server
     "http://127.0.0.1:3000",
@@ -22,7 +18,6 @@ app.add_middleware(
     allow_methods=["*"],    # Allow POST, GET, OPTIONS etc.
     allow_headers=["*"],    # Allow JSON content-type
 )
-# ------------------------------------------
 
 
 @app.post("/score", response_model=OverallResponse)
