@@ -1,4 +1,3 @@
-# api/main.py
 from fastapi import FastAPI
 from .schemas import TranscriptRequest, CriterionScore, OverallResponse
 from models.overall_scorer import score_transcript
