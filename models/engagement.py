@@ -1,4 +1,3 @@
-# models/engagement.py
 from typing import Dict
 from nltk.sentiment import SentimentIntensityAnalyzer
 
@@ -6,8 +5,7 @@ sia = SentimentIntensityAnalyzer()
 
 def score_engagement(text: str) -> Dict:
     scores = sia.polarity_scores(text)
-    pos_prob = scores["pos"]  # 0–1[attached_file:8cf2f828-ba64-496c-88f2-5596011ec523]
-
+    pos_prob = scores["pos"] 
     if pos_prob >= 0.9:
         raw = 15
     elif pos_prob >= 0.7:
