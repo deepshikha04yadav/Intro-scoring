@@ -1,4 +1,3 @@
-# models/overall_scorer.py
 from typing import Dict
 from models.content_structure import score_content_structure
 from models.speech_rate import score_speech_rate
@@ -13,7 +12,7 @@ def score_transcript(text: str, duration_sec: float) -> Dict:
     cl = score_clarity(text)
     en = score_engagement(text)
 
-    # Raw totals already aligned to weightage: 40 + 10 + 20 + 15 + 15 = 100[attached_file:8cf2f828-ba64-496c-88f2-5596011ec523]
+
     final_raw = cs["raw_total"] + sr["raw"] + lg["raw_total"] + cl["raw"] + en["raw"]
 
     return {

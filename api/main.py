@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 from fastapi.middleware.cors import CORSMiddleware
+=======
+>>>>>>> af9d1a4abcf727d422f351a5bb7e0d42a4df7aa8
 from fastapi import FastAPI
 
 from .schemas import TranscriptRequest, CriterionScore, OverallResponse

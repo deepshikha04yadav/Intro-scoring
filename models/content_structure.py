@@ -1,4 +1,3 @@
-# models/content_structure.py
 from typing import Dict
 import re
 import spacy
@@ -59,7 +58,7 @@ def score_keywords(text: str) -> Dict:
             "must_score": must_score, "good_score": good_score}
 
 def score_flow(text: str) -> Dict:
-    # Very simple: just check salutation at start and closing at end
+   
     doc = list(nlp(text).sents)
     first = doc[0].text.lower() if doc else ""
     last = doc[-1].text.lower() if doc else ""
@@ -82,7 +81,7 @@ def score_content_structure(text: str) -> Dict:
     fl = score_flow(text)
 
     # Combine into rubric 40% weight already encoded as:
-    total_raw = sal["raw"] + kw["raw"] + fl["raw"]  # max 5 + 30 + 5 = 40[attached_file:8cf2f828-ba64-496c-88f2-5596011ec523]
+    total_raw = sal["raw"] + kw["raw"] + fl["raw"] 
     return {
         "salutation": sal,
         "keywords": kw,

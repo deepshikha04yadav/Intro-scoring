@@ -1,4 +1,3 @@
-# api/schemas.py
 from pydantic import BaseModel
 
 class TranscriptRequest(BaseModel):
@@ -7,9 +6,9 @@ class TranscriptRequest(BaseModel):
 
 class CriterionScore(BaseModel):
     name: str
-    raw_score: float      # rubric-scale score (e.g. 0–5, 0–10, 0–15)
+    raw_score: float      
     max_score: float
-    normalized: float     # 0–1
+    normalized: float    
     details: dict
 
 class OverallResponse(BaseModel):
