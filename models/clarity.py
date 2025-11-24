@@ -1,4 +1,3 @@
-# models/clarity.py
 from typing import Dict
 import re
 
@@ -19,7 +18,7 @@ def score_clarity(text: str) -> Dict:
     wc = _word_count(text)
     rate = (filler_count / wc * 100) if wc > 0 else 0
 
-    # Map rate to rubric scores 0–15[attached_file:8cf2f828-ba64-496c-88f2-5596011ec523]
+    # Map rate to rubric scores 0–15
     if 0 <= rate <= 3:
         raw = 15
     elif 4 <= rate <= 6:
