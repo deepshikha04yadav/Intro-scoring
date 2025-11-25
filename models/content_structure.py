@@ -3,6 +3,8 @@ import re
 import nltk
 import os
 
+nltk.download('vader_lexicon')
+
 nltk.data.path.append(os.path.join(os.path.dirname(__file__), "..", "nltk_data"))
 from nltk.tokenize import sent_tokenize
 
