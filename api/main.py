@@ -7,8 +7,8 @@ from models.overall_scorer import score_transcript
 app = FastAPI(title="Spoken Intro Scoring API")
 
 origins = [
-    "http://localhost:3000",  # React Dev Server
-    "http://127.0.0.1:3000",
+    "http://localhost:3000", 
+    "https://intro-scoring.vercel.app/",
 ]
 
 app.add_middleware(
