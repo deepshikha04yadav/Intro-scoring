@@ -4,13 +4,6 @@ import nltk
 import os
 
 nltk.data.path.append(os.path.join(os.path.dirname(__file__), "..", "nltk_data"))
-
-
-try:
-    nltk.data.find("tokenizers/punkt")
-except LookupError:
-    nltk.download("punkt")
-
 from nltk.tokenize import sent_tokenize
 
 
