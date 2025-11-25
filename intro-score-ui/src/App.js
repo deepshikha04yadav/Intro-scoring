@@ -9,24 +9,29 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!text || !duration) {
-      alert("Please enter transcript and duration.");
-      return;
-    }
+  if (!text || !duration) {
+    alert("Please enter transcript and duration.");
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const res = await axios.post("http://127.0.0.1:8000/score", {
-        text,
-        duration_sec: Number(duration),
-      });
-      setResult(res.data);
-    } catch (err) {
-      alert("Error connecting to backend");
-      console.error(err);
-    }
-    setLoading(false);
-  };
+  setLoading(true);
+
+  try {
+    const API_URL = "https://intro-scoring.onrender.com/score";
+
+    const res = await axios.post(API_URL, {
+      text,
+      duration_sec: Number(duration),
+    });
+
+    setResult(res.data);
+  } catch (err) {
+    alert("Error connecting to backend");
+    console.error(err);
+  }
+
+  setLoading(false);
+};
 
   return (
     <div className="container">
