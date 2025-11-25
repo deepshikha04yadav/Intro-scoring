@@ -1,8 +1,14 @@
 from typing import Dict
 import re
-import spacy
+import nltk
 
-nlp = spacy.load("en_core_web_sm")
+try:
+    nltk.data.find("tokenizers/punkt")
+except LookupError:
+    nltk.download("punkt")
+
+from nltk.tokenize import sent_tokenize
+
 
 RUBRIC_SCORES = {
     "salutation": {"none": 0, "normal": 2, "good": 4, "excellent": 5},
@@ -10,23 +16,31 @@ RUBRIC_SCORES = {
     "flow": {"order_followed": 5, "order_not_followed": 0},
 }
 
+
 def score_salutation(text: str) -> Dict:
     text_lower = text.lower()
+
     if not re.search(r"\bhi\b|\bhello\b|\bgood\s+(morning|afternoon|evening|day)\b", text_lower):
         level = "none"
     elif "excited" in text_lower or "feeling great" in text_lower:
         level = "excellent"
-    elif "good morning" in text_lower or "good afternoon" in text_lower \
-            or "good evening" in text_lower or "hello everyone" in text_lower:
+    elif any(x in text_lower for x in ["good morning", "good afternoon", "good evening", "hello everyone"]):
         level = "good"
     else:
         level = "normal"
+
     raw = RUBRIC_SCORES["salutation"][level]
-    return {"raw": raw, "max": 5.0, "normalized": raw / 5.0, "level": level}
+
+    return {
+        "raw": raw,
+        "max": 5.0,
+        "normalized": raw / 5.0,
+        "level": level,
+    }
+
 
 def score_keywords(text: str) -> Dict:
-    doc = nlp(text.lower())
-    tokens = {t.text for t in doc}
+    text_lower = text.lower()
 
     must_have = {
         "name": ["my name", "myself"],
@@ -35,6 +49,7 @@ def score_keywords(text: str) -> Dict:
         "family": ["family"],
         "hobby": ["hobby", "hobbies", "enjoy", "like to", "playing"],
     }
+
     good_to_have = {
         "family_detail": ["mother", "father", "parents", "sister", "brother"],
         "origin": ["i am from"],
@@ -43,28 +58,36 @@ def score_keywords(text: str) -> Dict:
         "strengths": ["achievement", "strength", "proud of"],
     }
 
-    must_score = 0
-    for _, patterns in must_have.items():
-        if any(p in text.lower() for p in patterns):
-            must_score += RUBRIC_SCORES["keywords"]["must_have_per_item"]
+    must_score = sum(
+        RUBRIC_SCORES["keywords"]["must_have_per_item"]
+        for _, pats in must_have.items()
+        if any(p in text_lower for p in pats)
+    )
 
-    good_score = 0
-    for _, patterns in good_to_have.items():
-        if any(p in text.lower() for p in patterns):
-            good_score += RUBRIC_SCORES["keywords"]["good_to_have_per_item"]
+    good_score = sum(
+        RUBRIC_SCORES["keywords"]["good_to_have_per_item"]
+        for _, pats in good_to_have.items()
+        if any(p in text_lower for p in pats)
+    )
 
     raw = min(must_score + good_score, RUBRIC_SCORES["keywords"]["max"])
-    return {"raw": raw, "max": 30.0, "normalized": raw / 30.0,
-            "must_score": must_score, "good_score": good_score}
+
+    return {
+        "raw": raw,
+        "max": 30.0,
+        "normalized": raw / 30.0,
+        "must_score": must_score,
+        "good_score": good_score,
+    }
+
 
 def score_flow(text: str) -> Dict:
-   
-    doc = list(nlp(text).sents)
-    first = doc[0].text.lower() if doc else ""
-    last = doc[-1].text.lower() if doc else ""
+    sentences = sent_tokenize(text)
+    first = sentences[0].lower() if sentences else ""
+    last = sentences[-1].lower() if sentences else ""
 
-    has_salutation = "hello" in first or "good" in first or "hi" in first
-    has_closing = "thank you" in last or "thanks" in last
+    has_salutation = any(word in first for word in ["hello", "good", "hi"])
+    has_closing = any(word in last for word in ["thank you", "thanks"])
 
     if has_salutation and has_closing:
         raw = RUBRIC_SCORES["flow"]["order_followed"]
@@ -73,15 +96,21 @@ def score_flow(text: str) -> Dict:
         raw = RUBRIC_SCORES["flow"]["order_not_followed"]
         order = "order_not_followed"
 
-    return {"raw": raw, "max": 5.0, "normalized": raw / 5.0, "order": order}
+    return {
+        "raw": raw,
+        "max": 5.0,
+        "normalized": raw / 5.0,
+        "order": order,
+    }
+
 
 def score_content_structure(text: str) -> Dict:
     sal = score_salutation(text)
     kw = score_keywords(text)
     fl = score_flow(text)
 
-    # Combine into rubric 40% weight already encoded as:
-    total_raw = sal["raw"] + kw["raw"] + fl["raw"] 
+    total_raw = sal["raw"] + kw["raw"] + fl["raw"]
+
     return {
         "salutation": sal,
         "keywords": kw,
