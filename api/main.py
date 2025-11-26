@@ -8,7 +8,7 @@ app = FastAPI(title="Spoken Intro Scoring API")
 
 origins = [
     "http://localhost:3000", 
-    "https://intro-scoring.vercel.app/",
+    "https://intro-scoring.vercel.app",
 ]
 
 app.add_middleware(
