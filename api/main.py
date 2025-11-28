@@ -6,14 +6,24 @@ from models.overall_scorer import score_transcript
 
 app = FastAPI(title="Spoken Intro Scoring API")
 
-origins = [
-    "http://localhost:3000", 
-    "https://intro-scoring.vercel.app",
-]
+# origins = [
+#     "http://localhost:3000", 
+#     "https://intro-scoring.vercel.app",
+# ]
 
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"], 
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=[
+        "https://intro-scoring.vercel.app",  # your frontend domain
+        # "http://localhost:3000",              # optional — for local dev
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
